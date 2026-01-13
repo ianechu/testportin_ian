@@ -358,30 +358,32 @@
         .addEventListener("click", async () => {
           try {
             // Crear
-            const descripcion =
-              document.getElementById("createDescripcion").value ||
+            const nombre =
+              document.getElementById("createNombre").value ||
               "Prueba API";
-            const precio =
-              Number(document.getElementById("createPrecio").value) || 0;
-            const descuento =
-              Number(document.getElementById("createDescuento").value) || 0;
-            const idTipoarticulo =
+            const idEntrenador =
+              Number(document.getElementById("createIdEntrenador").value) || 0;
+            const idLiga =
+              Number(document.getElementById("createIdLiga").value) || 0;
+            const idcategoria =
               Number(document.getElementById("createIdTipo").value) || 1;
             const idClub =
               Number(document.getElementById("createIdClub").value) || 1;
+            const idTemporada =
+              Number(document.getElementById("createIdTemporada").value) || 0;
             log(
-              "Iniciando CREATE con idTipoarticulo=" +
-                idTipoarticulo +
+              "Iniciando CREATE con idCategoria=" +
+                idcategoria +
                 " idClub=" +
                 idClub
             );
             const createPayload = {
               descripcion,
-              precio,
-              descuento,
-              imagen: null,
-              idTipoarticulo,
+              idEntrenador,
+              idLiga,
+              idcategoria,
               idClub,
+              idTemporada,
             };
             const created = await api("", {
               method: "POST",
@@ -400,7 +402,6 @@
               descripcion: descripcion + " - UPDATED",
               precio: (Number(precio) + 1).toFixed(2),
               descuento: Number(descuento) + 0.5,
-              imagen: null,
             });
             log("Executing UPDATE for id=" + newId);
             const updated = await api("", {
