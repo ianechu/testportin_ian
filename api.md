@@ -260,11 +260,11 @@ Endpoints:
 ---
 
 ## 16. Artículos
-Modelo: `id`, `descripcion`, `precio`, `descuento`, `imagen`, `tipoarticulo` (objeto), contadores `comentarioarts`, `compras`, `carritos`.
+Modelo: `id`, `descripcion`, `precio`, `descuento`, `imagen`, `tipoarticulo` (objeto), `club` (objeto), contadores `comentarioarts`, `compras`, `carritos`.
 
 Endpoints:
 - GET /articulo/{id}
-- GET /articulo?page&size&sort&descripcion&idTipoarticulo (size por defecto 1000)
+- GET /articulo?page&size&sort&descripcion&idTipoarticulo&idClub (size por defecto 1000)
 - POST /articulo
 - PUT /articulo
 - DELETE /articulo/{id}

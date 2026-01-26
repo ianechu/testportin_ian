@@ -158,7 +158,7 @@
         <div class="card">
           <label>Create → Update → Delete</label>
           <div class="muted">
-            Crea un artículo (usa idTipoarticulo=1 por defecto), lo actualiza (descripción, precio) y luego lo borra.
+            Crea un artículo (usa idTipoarticulo=1, idClub=1 por defecto), lo actualiza (descripción, precio) y luego lo borra.
           </div>
           <div style="margin-top: 8px">
             <label for="createDescripcion">Descripción</label>
@@ -193,6 +193,10 @@
             <input id="createIdTipoarticulo" type="number" value="1" />
           </div>
           <div style="margin-top: 8px">
+            <label for="createIdClub">ID Club</label>
+            <input id="createIdClub" type="number" value="1" />
+          </div>
+          <div style="margin-top: 8px">
             <button id="btnCreateUpdateDelete">
               Ejecutar proceso completo
             </button>
@@ -206,7 +210,7 @@
       </section>
 
       <p class="muted" style="margin-top: 12px">
-        Notas: Asume que el backend está disponible en <code>http://localhost:8089/articulo</code>. Para <strong>create</strong> se requiere idTipoarticulo — si ese FK no existe, la creación fallará.
+        Notas: Asume que el backend está disponible en <code>http://localhost:8089/articulo</code>. Para <strong>create</strong> se requieren idTipoarticulo e idClub — si esos FK no existen, la creación fallará.
       </p>
     </div>
 
@@ -322,9 +326,10 @@
           const precio = Number(document.getElementById("createPrecio").value || 29.99);
           const descuento = Number(document.getElementById("createDescuento").value || 0);
           const idTipoarticulo = Number(document.getElementById("createIdTipoarticulo").value || 1);
+          const idClub = Number(document.getElementById("createIdClub").value || 1);
 
           log('Iniciando CREATE (POST /articulo) con descripcion="' + descripcion + '"');
-          const createPayload = { descripcion, precio, descuento, idTipoarticulo };
+          const createPayload = { descripcion, precio, descuento, idTipoarticulo, idClub };
           const created = await api("", {
             method: "POST",
             body: JSON.stringify(createPayload),

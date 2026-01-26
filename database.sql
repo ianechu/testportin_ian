@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: database:3306
--- Tiempo de generación: 15-01-2026 a las 07:50:46
+-- Tiempo de generación: 26-01-2026 a las 10:20:00
 -- Versión del servidor: 8.4.5
 -- Versión de PHP: 8.2.28
 
@@ -14,8 +14,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `gesportin`
 --
-CREATE DATABASE IF NOT EXISTS `gesportin` DEFAULT CHARACTER SET utf32 COLLATE utf32_unicode_ci;
-USE `gesportin`;
 
 -- --------------------------------------------------------
 
@@ -29,7 +27,8 @@ CREATE TABLE `articulo` (
   `precio` decimal(10,2) NOT NULL,
   `descuento` decimal(10,2) DEFAULT NULL,
   `imagen` longblob,
-  `id_tipoarticulo` bigint NOT NULL
+  `id_tipoarticulo` bigint NOT NULL,
+  `id_club` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
 
 -- --------------------------------------------------------
@@ -69,9 +68,7 @@ CREATE TABLE `club` (
   `dirección` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
   `teléfono` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
   `fecha_alta` datetime NOT NULL,
-  `id_presidente` bigint NOT NULL,
-  `id_vicepresidente` bigint NOT NULL,
-  `imagen` longblob NOT NULL
+  `imagen` longblob
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
 
 -- --------------------------------------------------------
@@ -82,7 +79,7 @@ CREATE TABLE `club` (
 
 CREATE TABLE `comentario` (
   `id` bigint NOT NULL,
-  `contenido` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `contenido` text CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
   `id_noticia` bigint NOT NULL,
   `id_usuario` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
@@ -95,7 +92,7 @@ CREATE TABLE `comentario` (
 
 CREATE TABLE `comentarioart` (
   `id` bigint NOT NULL,
-  `contenido` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `contenido` text CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
   `id_articulo` bigint NOT NULL,
   `id_usuario` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
@@ -151,7 +148,7 @@ CREATE TABLE `factura` (
   `id` bigint NOT NULL,
   `fecha` datetime NOT NULL,
   `id_usuario` bigint NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -189,12 +186,12 @@ CREATE TABLE `liga` (
 
 CREATE TABLE `noticia` (
   `id` bigint NOT NULL,
-  `titulo` varchar(255) NOT NULL,
-  `contenido` text NOT NULL,
+  `titulo` varchar(255) COLLATE utf32_unicode_ci NOT NULL,
+  `contenido` text COLLATE utf32_unicode_ci NOT NULL,
   `fecha` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `imagen` longblob,
   `id_club` bigint NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -235,7 +232,18 @@ CREATE TABLE `puntuacion` (
   `puntuacion` tinyint NOT NULL,
   `id_noticia` bigint NOT NULL,
   `id_usuario` bigint NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `rolusuario`
+--
+
+CREATE TABLE `rolusuario` (
+  `id` bigint NOT NULL,
+  `descripcion` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -270,7 +278,7 @@ CREATE TABLE `tipoarticulo` (
 CREATE TABLE `tipousuario` (
   `id` bigint NOT NULL,
   `descripcion` varchar(255) CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -288,7 +296,8 @@ CREATE TABLE `usuario` (
   `fecha_alta` datetime NOT NULL,
   `genero` tinyint NOT NULL,
   `id_tipousuario` bigint NOT NULL,
-  `id_club` bigint NOT NULL
+  `id_club` bigint NOT NULL,
+  `id_rolusuario` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_unicode_ci;
 
 --
@@ -389,6 +398,12 @@ ALTER TABLE `partido`
 -- Indices de la tabla `puntuacion`
 --
 ALTER TABLE `puntuacion`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `rolusuario`
+--
+ALTER TABLE `rolusuario`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -513,6 +528,12 @@ ALTER TABLE `partido`
 -- AUTO_INCREMENT de la tabla `puntuacion`
 --
 ALTER TABLE `puntuacion`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `rolusuario`
+--
+ALTER TABLE `rolusuario`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --

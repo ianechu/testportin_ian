@@ -171,7 +171,7 @@
         <div class="card">
           <label>Create → Update → Delete</label>
           <div class="muted">
-            Crea un usuario (usa idTipousuario=1, idClub=1 por defecto), lo actualiza (nombre) y luego lo borra.
+            Crea un usuario (usa idTipousuario=1, idClub=1, idRolusuario=1 por defecto), lo actualiza (nombre) y luego lo borra.
           </div>
           <div style="margin-top: 8px">
             <label for="createNombre">Nombre</label>
@@ -210,6 +210,10 @@
             <input id="createIdClub" type="number" value="1" />
           </div>
           <div style="margin-top: 8px">
+            <label for="createIdRolusuario">ID Rol Usuario</label>
+            <input id="createIdRolusuario" type="number" value="1" />
+          </div>
+          <div style="margin-top: 8px">
             <button id="btnCreateUpdateDelete">
               Ejecutar proceso completo
             </button>
@@ -223,7 +227,7 @@
       </section>
 
       <p class="muted" style="margin-top: 12px">
-        Notas: Asume que el backend está disponible en <code>http://localhost:8089/usuario</code>. Para <strong>create</strong> se requieren idTipousuario e idClub — si esos FK no existen, la creación fallará.
+        Notas: Asume que el backend está disponible en <code>http://localhost:8089/usuario</code>. Para <strong>create</strong> se requieren idTipousuario, idClub e idRolusuario — si esos FK no existen, la creación fallará.
       </p>
     </div>
 
@@ -363,9 +367,10 @@
           const genero = Number(document.getElementById("createGenero").value || 1);
           const idTipousuario = Number(document.getElementById("createIdTipousuario").value || 1);
           const idClub = Number(document.getElementById("createIdClub").value || 1);
+          const idRolusuario = Number(document.getElementById("createIdRolusuario").value || 1);
 
           log('Iniciando CREATE (POST /usuario) con nombre="' + nombre + '"');
-          const createPayload = { nombre, apellido1, apellido2, username, password, genero, idTipousuario, idClub };
+          const createPayload = { nombre, apellido1, apellido2, username, password, genero, idTipousuario, idClub, idRolusuario };
           const created = await api("", {
             method: "POST",
             body: JSON.stringify(createPayload),
