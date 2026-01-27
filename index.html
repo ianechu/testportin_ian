@@ -42,6 +42,76 @@
         font-weight: 300;
       }
 
+      .setup-section {
+        background: white;
+        padding: 20px;
+        border-radius: 6px;
+        margin-bottom: 30px;
+        border: 2px solid #ff6b6b;
+      }
+
+      .setup-section h2 {
+        font-size: 1rem;
+        margin-bottom: 12px;
+        color: #ff6b6b;
+      }
+
+      .setup-button {
+        display: block;
+        width: 100%;
+        padding: 14px 20px;
+        background: #ff6b6b;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .setup-button:hover:not(:disabled) {
+        background: #ff5252;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+      }
+
+      .setup-button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+
+      .setup-status {
+        margin-top: 12px;
+        padding: 12px;
+        background: #f5f5f5;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        color: #666;
+        max-height: 200px;
+        overflow-y: auto;
+        font-family: monospace;
+      }
+
+      .setup-status.active {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .setup-status.error {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      .summary {
+        margin-top: 12px;
+        padding: 12px;
+        background: #e3f2fd;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        color: #1565c0;
+      }
+
       .divider {
         height: 2px;
         background: #0b74de;
@@ -116,6 +186,12 @@
       </header>
 
       <div class="divider"></div>
+
+      <div class="setup-section">
+        <h2>⚙️ Configuración Inicial</h2>
+        <button class="setup-button" id="btnSetup">Crear datos de prueba (tipousuario → 50 roles → 100 de cada tabla)</button>
+        <div class="setup-status" id="setupStatus"></div>
+      </div>
 
       <div class="grid">
         <a href="club.html">
@@ -251,6 +327,31 @@
 
       const baseUrl = "http://localhost:8089";
 
+      // Tabla de orden de creación y cantidad
+      const setupOrder = [
+        { name: "tipousuario", quantity: 1, endpoint: "tipousuario", method: "GET", path: "/fill" },
+        { name: "rolusuario", quantity: 50, endpoint: "rolusuario", method: "POST", path: "/fill" },
+        { name: "club", quantity: 100, endpoint: "club", method: "POST", path: "/fill/100" },
+        { name: "usuario", quantity: 100, endpoint: "usuario", method: "POST", path: "/fill/100" },
+        { name: "noticia", quantity: 100, endpoint: "noticia", method: "POST", path: "/fill/100" },
+        { name: "comentario", quantity: 100, endpoint: "comentario", method: "POST", path: "/fill/100" },
+        { name: "puntuacion", quantity: 100, endpoint: "puntuacion", method: "POST", path: "/fill/100" },
+        { name: "tipoarticulo", quantity: 100, endpoint: "tipoarticulo", method: "POST", path: "/fill/100" },
+        { name: "articulo", quantity: 100, endpoint: "articulo", method: "POST", path: "/fill/100" },
+        { name: "comentarioart", quantity: 100, endpoint: "comentarioart", method: "POST", path: "/fill/100" },
+        { name: "temporada", quantity: 100, endpoint: "temporada", method: "POST", path: "/fill/100" },
+        { name: "categoria", quantity: 100, endpoint: "categoria", method: "POST", path: "/fill/100" },
+        { name: "equipo", quantity: 100, endpoint: "equipo", method: "POST", path: "/fill/100" },
+        { name: "liga", quantity: 100, endpoint: "liga", method: "POST", path: "/fill/100" },
+        { name: "partido", quantity: 100, endpoint: "partido", method: "POST", path: "/fill/100" },
+        { name: "jugador", quantity: 100, endpoint: "jugador", method: "POST", path: "/fill/100" },
+        { name: "cuota", quantity: 100, endpoint: "cuota", method: "POST", path: "/fill/100" },
+        { name: "carrito", quantity: 100, endpoint: "carrito", method: "POST", path: "/fill/100" },
+        { name: "factura", quantity: 100, endpoint: "factura", method: "POST", path: "/fill/100" },
+        { name: "compra", quantity: 100, endpoint: "compra", method: "POST", path: "/fill/100" },
+        { name: "pago", quantity: 100, endpoint: "pago", method: "POST", path: "/fill/100" },
+      ];
+
       async function fetchCount(endpoint) {
         try {
           const res = await fetch(`${baseUrl}/${endpoint}/count`);
@@ -270,6 +371,70 @@
         }
       }
 
+      function log(message, isError = false) {
+        const statusEl = document.getElementById("setupStatus");
+        const timestamp = new Date().toLocaleTimeString();
+        const line = `[${timestamp}] ${message}`;
+        statusEl.textContent = line + "\n" + statusEl.textContent;
+        statusEl.classList.toggle("error", isError);
+        statusEl.classList.add("active");
+      }
+
+      async function setupData() {
+        const btn = document.getElementById("btnSetup");
+        const statusEl = document.getElementById("setupStatus");
+        btn.disabled = true;
+        statusEl.innerHTML = "";
+
+        log("Iniciando configuración inicial...");
+
+        const results = {};
+
+        for (const item of setupOrder) {
+          try {
+            const url = `${baseUrl}/${item.endpoint}${item.path}`;
+            log(`Creando ${item.quantity} ${item.name}...`);
+            
+            const response = await fetch(url, {
+              method: item.method,
+              headers: { "Content-Type": "application/json" },
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}`);
+            }
+
+            results[item.name] = item.quantity;
+            log(`✓ ${item.name}: ${item.quantity} registros creados`);
+          } catch (e) {
+            log(`✗ Error creando ${item.name}: ${e.message}`, true);
+            results[item.name] = 0;
+          }
+        }
+
+        // Mostrar resumen
+        log("----------------------------------------");
+        log("Resumen de creación:");
+        log("----------------------------------------");
+
+        let totalRecords = 0;
+        for (const item of setupOrder) {
+          const count = results[item.name] || 0;
+          totalRecords += count;
+          log(`${item.name}: ${count} registros`);
+        }
+
+        log("----------------------------------------");
+        log(`Total: ${totalRecords} registros`);
+        log("----------------------------------------");
+        log("✓ Configuración completada");
+
+        // Recargar contadores
+        await loadCounts();
+        btn.disabled = false;
+      }
+
+      document.getElementById("btnSetup").addEventListener("click", setupData);
       window.addEventListener("load", loadCounts);
     </script>
   </body>
